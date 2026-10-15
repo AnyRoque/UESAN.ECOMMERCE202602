@@ -1,6 +1,9 @@
+using System;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UESAN.ECOMMERCE.CORE.Core.Interfaces;
+using UESAN.ECOMMERCE.CORE.Core.DTOs;
 
 namespace UESAN.ECOMMERCE.API.Controllers
 {
@@ -16,33 +19,63 @@ namespace UESAN.ECOMMERCE.API.Controllers
             _favoriteService = favoriteService;
         }
 
+        private int GetUserIdFromToken()
+        {
+            var claim = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(claim)) throw new UnauthorizedAccessException("UserId claim missing");
+            return int.Parse(claim);
+        }
         [HttpGet]
         public async Task<IActionResult> GetFavorites()
         {
-            var result = await _favoriteService.GetFavorites();
-            return Ok(result);
-        }
+            int userId;
+            try
+            {
+                userId = GetUserIdFromToken();
+            }
+            catch
+            {
+                return Unauthorized();
+            }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetFavoritesByUserId(int id)
-        {
-            var result = await _favoriteService.GetFavoritesByUserId(id);
+            var result = await _favoriteService.GetFavoritesByUserId(userId);
             if (result == null) return NotFound();
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFavorite([FromBody] UESAN.ECOMMERCE.CORE.Core.DTOs.FavoriteCreateDTO favoriteCreateDTO)
+        public async Task<IActionResult> CreateFavorite([FromBody] FavoriteCreateDTO favoriteCreateDTO)
         {
+            int userId;
+            try
+            {
+                userId = GetUserIdFromToken();
+            }
+            catch
+            {
+                return Unauthorized();
+            }
+
+            favoriteCreateDTO.UserId = userId;
             var result = await _favoriteService.CreateFavorite(favoriteCreateDTO);
             if (!result) return BadRequest();
             return Created();
         }
 
-        [HttpDelete("{userId}/{productId}")]
-        public async Task<IActionResult> DeleteFavorite(int userId, int productId)
+        [HttpDelete("{productId}")]
+        public async Task<IActionResult> DeleteFavorite(int productId)
         {
-            var dto = new UESAN.ECOMMERCE.CORE.Core.DTOs.FavoriteDeleteDTO { UserId = userId, ProductId = productId };
+            int userId;
+            try
+            {
+                userId = GetUserIdFromToken();
+            }
+            catch
+            {
+                return Unauthorized();
+            }
+
+            var dto = new FavoriteDeleteDTO { UserId = userId, ProductId = productId };
             var result = await _favoriteService.DeleteFavorite(dto);
             if (!result) return NotFound();
             return NoContent();
