@@ -23,6 +23,9 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<UESAN.ECOMMERCE.CORE.Core.Interfaces.IFavoriteRepository, UESAN.ECOMMERCE.CORE.Infrastructure.Repositories.FavoriteRepository>();
 builder.Services.AddTransient<UESAN.ECOMMERCE.CORE.Core.Interfaces.IFavoriteService, UESAN.ECOMMERCE.CORE.Core.Services.FavoriteService>();
+builder.Services.AddTransient<UESAN.ECOMMERCE.CORE.Core.Interfaces.IOrderRepository, UESAN.ECOMMERCE.CORE.Infrastructure.Repositories.OrderRepository>();
+builder.Services.AddTransient<UESAN.ECOMMERCE.CORE.Core.Interfaces.IOrderDetailRepository, UESAN.ECOMMERCE.CORE.Infrastructure.Repositories.OrderDetailRepository>();
+builder.Services.AddTransient<UESAN.ECOMMERCE.CORE.Core.Interfaces.IOrderService, UESAN.ECOMMERCE.CORE.Core.Services.OrderService>();
 
 builder.Services.AddSharedInfrastructure(_config);
 
