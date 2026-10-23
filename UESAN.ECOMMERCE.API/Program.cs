@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
+using OllamaSharp;
 using UESAN.ECOMMERCE.CORE.Core.Interfaces;
 using UESAN.ECOMMERCE.CORE.Core.Services;
 using UESAN.ECOMMERCE.CORE.Infrastructure.Data;
@@ -28,6 +30,12 @@ builder.Services.AddTransient<UESAN.ECOMMERCE.CORE.Core.Interfaces.IOrderDetailR
 builder.Services.AddTransient<UESAN.ECOMMERCE.CORE.Core.Interfaces.IOrderService, UESAN.ECOMMERCE.CORE.Core.Services.OrderService>();
 
 builder.Services.AddSharedInfrastructure(_config);
+// IChatClient
+IChatClient chatClient = _config["AI:Provider"] == "Gemini"
+    ? new Google.GenAI.Client(apiKey: _config["AI:Gemini:ApiKey"]).AsIChatClient(_config["AI:Gemini:Model"])
+    : new OllamaApiClient(new Uri(_config["AI:Ollama:Endpoint"]!), _config["AI:Ollama:Model"]!);
+
+builder.Services.AddChatClient(chatClient);
 
 
 builder.Services.AddControllers();

@@ -2,5 +2,10 @@
 
 GET {{UESAN.ECOMMERCE.API_HostAddress}}/weatherforecast/
 Accept: application/json
-
 ###
+
+POST {{UESAN.ECOMMERCE.API_HostAddress}}/api/ai/chat
+Content-Type: application/json
+{ "message": "Conoces la universidad ESAN"}
+
+
