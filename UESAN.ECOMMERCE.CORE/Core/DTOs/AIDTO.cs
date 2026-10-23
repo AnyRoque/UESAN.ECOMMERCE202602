@@ -14,5 +14,18 @@ namespace UESAN.ECOMMERCE.CORE.Core.DTOs
         public string  Model { get; set; }
     }
 
+    public class MyOrdersRequestDTO
+    {
+        public int UserId{ get; set; }
+        public string Message { get; set; }
+    }
+
+    public class ContextResponseDTO 
+    {
+        public string Answer { get; set; }
+        public string Model { get; set; }
+        public string Context { get; set; }
+    }
+
 
 }
